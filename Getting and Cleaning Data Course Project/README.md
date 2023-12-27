@@ -1,10 +1,12 @@
-# run_analysis.R
+## Project Introduction
 
-This script is used to perform data cleaning and analysis on the "Human Activity Recognition Using Smartphones" dataset. It follows the requirements of the "Getting and Cleaning Data" course project on Coursera.
+This project to build R scripts to perform data cleaning and analysis on the "Human Activity Recognition Using Smartphones" dataset. It follows the requirements of the "Getting and Cleaning Data" course project on Coursera.
+
+User needs to run the `run_analysis.R` script to download the dataset, perform data cleaning and analysis, and generate a tidy dataset file named `output_data.csv` in the working directory.
 
 ## Prerequisites
 
-Before running the script, make sure you have the following:
+Before running the `run_analysis.R` script, make sure you have the following:
 
 - R programming language installed
 - The "dplyr" package installed (you can install it using `install.packages("dplyr")`)
