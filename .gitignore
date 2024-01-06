@@ -1,0 +1,8 @@
+# ignore ALL .csv files
+*.csv
+
+# ignore ALL .txt files
+*.txt
+
+# ignore ALL .zip files
+*.zip
