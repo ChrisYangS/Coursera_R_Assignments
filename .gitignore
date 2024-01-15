@@ -1,8 +1,11 @@
 # ignore ALL .csv files
-**.csv
+**/*.csv
 
 # ignore ALL .txt files
-**.txt
+**/*.txt
 
 # ignore ALL .zip files
-**.zip
+**/*.zip
+
+# ignore ALL .rds files
+**/*.rds
