@@ -9,3 +9,5 @@
 
 # ignore ALL .rds files
 **/*.rds
+
+# ignore ALL .Rhistory files
