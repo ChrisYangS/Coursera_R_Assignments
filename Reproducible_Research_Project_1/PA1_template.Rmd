@@ -1,0 +1,23 @@
+# Reproducible Research Project 1
+## Loading and preprocessing Data By Downloading the Dataset
+
+### Part 1: Load the Data
+
+```{r, echo=TRUE}
+# Download the dataset
+fileUrl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+# Create a data directory if it doesn't exist
+if (!file.exists("./data")) {
+    dir.create("./data")
+}
+# check if activity.zip file exists
+if (!file.exists("./data/activity.zip")) {
+    download.file(fileUrl, destfile = "./data/activity.zip")
+}
+# check if activity.csv file exists
+if (!file.exists("./data/activity.csv")) {
+    unzip("./data/activity.zip", exdir = "./data")
+}
+# Read the data
+activity <- read.csv("./data/activity.csv")
+```
