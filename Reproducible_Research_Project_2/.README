@@ -17,6 +17,9 @@ name]. The project includes the following tasks:
 Final output of the project is a report that is published on RPubs
 (https://rpubs.com/ChrisSYang/1140761)
 
+Below is the snapshot of the final output:
+![noaa_analysis.jpeg](noaa_analysis.jpeg)
+
 ## Getting Started
 
 To get started with this project, follow the steps below:
@@ -33,8 +36,9 @@ The project is organized as follows:
 -   `data/`: Contains the dataset to be downloaded for data analysis. The R
     Markdown file includes process to download the source data if it does not
     exist in the `data/` directory
--   `noaa_data.Rmd`: R Markdown file containing the code for data analysis
--   `noaa_data.html`: HTML file containing the output of the R Markdown file
+-   `noaa_analysis.Rmd`: R Markdown file containing the code for data analysis
+-   `noaa_analysis.html`: HTML file containing the output of the R Markdown file
+-   `noaa_analysis.jpeg`: JPEG file containing the image of the R Markdown file
 
 ## Dependencies
 

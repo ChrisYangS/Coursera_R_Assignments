@@ -1,4 +1,4 @@
-# NOAA Storm Database Expiatory Analysis
+# NOAA Storm Database Expiatory Analysis: Public Health and Economic Impacts of Storms
 
 ## Synopsis
 
@@ -33,9 +33,9 @@ storm <- read.csv("data/StormData.csv.bz2", header = TRUE, sep = ",", stringsAsF
 
 ## Results
 
-**This data Analysis tasks primary focus on answering the following questions:**
+**This data Analysis tasks primary focus on answering the following questions:**. 
 
-#### 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+*1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?*
 ```{r cache=TRUE, echo=TRUE}
 # Which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 # Create a subset of the data with only the columns we need
@@ -61,7 +61,7 @@ g
 
 ```
 
-#### 2. Across the United States, which types of events have the greatest economic consequences?
+*2. Across the United States, which types of events have the greatest economic consequences?*
 ```{r cache=TRUE, echo=TRUE}
 # Which types of events have the greatest economic consequences accross the United State
 # Create a subset of the data with only the columns we need
