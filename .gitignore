@@ -7,7 +7,15 @@
 # ignore ALL .zip files
 **/*.zip
 
+#ignore ALL .bz2 files
+**/*.bz2
+
 # ignore ALL .rds files
 **/*.rds
 
 # ignore ALL .Rhistory files
+
+## ignore all subfolders (excluding data folder) in Reproducible_Research_Project_2 folders
+Reproducible_Research_Project_2/*/
+!Reproducible_Research_Project_2/data
+

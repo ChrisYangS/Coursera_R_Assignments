@@ -1,0 +1,90 @@
+# NOAA Storm Database Expiatory Analysis
+
+## Synopsis
+
+In this analysis, we are working with the NOAA Storm Database to perform an exploratory analysis. The goal is to gain insights and understand the patterns and characteristics of storms recorded in the database.
+
+By analyzing the NOAA Storm Database, we aim to uncover valuable insights that can contribute to a better understanding of storm patterns and potentially aid in disaster preparedness and response efforts.
+
+It is important to note that this analysis is based on the assumption that the "StormData.csv.bz2" file is available and properly formatted. Any issues with the data or its availability may impact the accuracy and reliability of the analysis.
+
+Overall, this analysis provides a foundation for further investigation and exploration of storm data, with the potential to inform decision-making and improve our understanding of severe weather events.
+
+## Data Processing
+
+To start, we check if a "data" folder exists, and if not, we create one. Then, we check if the "StormData.csv.bz2" file exists in the "data" folder. If it doesn't, we download it from a specified URL using the "download.file" function.
+
+Next, we load the data from the "StormData.csv.bz2" file into a data frame called "storm". The data includes information about various storm events such as their location, date, time, type, and impact.
+
+With the data loaded, we can proceed with our exploratory analysis. This may involve examining the distribution of storm types, investigating the frequency and severity of storms over time, identifying regions with the highest storm occurrence, and exploring relationships between storm characteristics.
+```{r cache=TRUE, echo=TRUE}
+# check if /data folder exists, if not create one
+if (!file.exists("./data")) {
+    dir.create("data")
+}
+# Then check if StormData.csv.bz2 exists, if not download it
+if (!file.exists("./data/StormData.csv.bz2")) {
+    download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2", "data/StormData.csv.bz2", method = "curl")
+}
+
+# Load data
+storm <- read.csv("data/StormData.csv.bz2", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+```
+
+## Results
+
+**This data Analysis tasks primary focus on answering the following questions:**
+
+#### 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+```{r cache=TRUE, echo=TRUE}
+# Which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+# Create a subset of the data with only the columns we need
+storm_subset <- storm[, c("EVTYPE", "FATALITIES", "INJURIES")]
+storm_subset$POPULATION = storm_subset$FATALITIES + storm_subset$INJURIES
+# group by event type and sum population
+storm_subset <- aggregate(POPULATION~EVTYPE,data=storm_subset, FUN = sum)
+# Sort by population in decreasing order
+storm_subset <- storm_subset[order(-storm_subset$POPULATION), ]
+most_harmful <-  storm_subset[1, 1]
+```
+The most harmful event type with respect to population health is: ***`r most_harmful`***  
+Below is the bar plot of the top 10 most harmful event types with respect to population health.
+```{r cache=TRUE, echo=TRUE}
+# Plot the top 10 most harmful event types with respect to population health
+top_10 <- storm_subset[1:10, ]
+library(ggplot2)
+g <- ggplot(top_10, aes(x = reorder(EVTYPE, -POPULATION), y = POPULATION)) 
+g <- g + geom_bar(stat = "identity", color = "skyblue", fill = "blue")
+g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+g <- g + labs(x = "Event Type", y = "Population") + ggtitle("Top 10 Most Harmful Event Types with Respect to Population Health")
+g
+
+```
+
+#### 2. Across the United States, which types of events have the greatest economic consequences?
+```{r cache=TRUE, echo=TRUE}
+# Which types of events have the greatest economic consequences accross the United State
+# Create a subset of the data with only the columns we need
+storm_subset <- storm[, c("EVTYPE", "PROPDMG", "CROPDMG")]
+storm_subset$ECONOMIC_IMPACT = storm_subset$PROPDMG + storm_subset$CROPDMG
+# group by event type and sum economic impact
+storm_subset <- aggregate(ECONOMIC_IMPACT ~ EVTYPE, data = storm_subset, FUN = sum)
+# Sort by economic impact in decreasing order
+storm_subset <- storm_subset[order(-storm_subset$ECONOMIC_IMPACT), ]
+greatest_economic_impact <- storm_subset[1, 1]
+```
+The event type with the greatest economic consequences is: ***`r greatest_economic_impact`***  
+Below is the bar plot of the top 10 event types with the greatest economic consequences.
+```{r cache=TRUE, echo=TRUE}
+# Plot the top 10 event types with the greatest economic consequences
+top_10 <- storm_subset[1:10, ]
+g <- ggplot(top_10, aes(x = reorder(EVTYPE, -ECONOMIC_IMPACT), y = ECONOMIC_IMPACT))
+g <- g + geom_bar(stat = "identity", color = "skyblue", fill = "blue")
+g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+g <- g + labs(x = "Event Type", y = "Economic Impact") + ggtitle("Top 10 Event Types with the Greatest Economic Consequences")
+g
+```
+
+## Summary
+
+The summary primarily addresses two key inquiries: which **TORNADO** inflicts the most harm on population health and which one has the most significant economic 
