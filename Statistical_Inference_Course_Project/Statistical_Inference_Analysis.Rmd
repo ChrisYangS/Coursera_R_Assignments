@@ -1,0 +1,177 @@
+# Statistical Inference Course Project
+
+### Part 1: Simulation Exercise
+
+In this project I will investigate the exponential distribution in R and compare it with the Central Limit Theorem. The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda. Set lambda = 0.2 for all of the simulations. I will investigate the distribution of averages of 40 exponentials. Note that I will need to do a thousand simulations.
+
+#### 1. Show the sample mean and compare it to the theoretical mean of the distribution.
+
+```{r}
+# set seed
+set.seed(1234)
+# set lambda
+lambda <- 0.2
+# set number of simulations
+n <- 1000
+# set number of exponentials
+m <- 40
+# simulate exponential distribution
+sim <- replicate(n, rexp(m, lambda))
+# calculate mean of each simulation
+means <- apply(sim, 2, mean)
+```
+
+```{r}
+# calculate mean of means
+mean(means)
+```
+
+```{r}
+# calculate theoretical mean
+1 / lambda
+```
+
+#### 2. Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+
+```{r}
+# calculate variance of means
+var(means)
+```
+
+```{r}
+# calculate theoretical variance
+(1 / lambda^2) / m
+```
+
+```{r}
+# Comparison 
+var(means)-(1 / lambda^2) / m
+```
+
+Comparing the two values of the **Variance** we see that the values are **very close**.
+
+#### 3. Show that the distribution is approximately normal.
+
+```{r}
+# plot histogram of sample distribution and showing both the mean and theoretical mean
+library(ggplot2)
+# set the ggplot theme
+theme_set(theme_dark())
+ggplot(data.frame(means), aes(x = means)) + 
+  geom_histogram(aes(y = ..density..), binwidth = 0.1, colour = "black", fill = "#ffffff") +
+  geom_density(colour = "red") +
+  geom_vline(aes(xintercept = mean(means)), colour = "#04ff00", linetype = "solid", size = 0.5) +
+  geom_vline(aes(xintercept = 1 / lambda), colour = "#ffb700", linetype = "solid", size = 0.5) +
+  ggtitle("Distribution of Sample Means") +
+  xlab("Sample Means") +
+  ylab("Density")
+```
+
+### Part 2 Basic Inferential Data Analysis
+
+Now in the second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.
+
+#### 1. Load the ToothGrowth data and perform some basic exploratory data analyses
+
+```{r}
+# load the ToothGrowth data
+data(ToothGrowth)
+
+# Change does column to factor data type
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+
+# check the structure of the data
+str(ToothGrowth)
+```
+
+```{r}
+# check the first 6 rows of the data
+head(ToothGrowth)
+```
+
+```{r}
+# check the last 6 rows of the data
+tail(ToothGrowth)
+```
+
+```{r}
+# check the dimensions of the data
+dim(ToothGrowth)
+```
+
+```{r}
+# check the names of the data
+names(ToothGrowth)
+```
+
+```{r}
+# check the class of the data
+class(ToothGrowth)
+```
+
+#### 2. Provide a basic summary of the data.
+
+```{r}
+# check the summary of the data
+summary(ToothGrowth)
+```
+
+```{r}
+# check the number of observations in each group
+aggregate(len ~ supp + dose, data = ToothGrowth, FUN = length)
+```
+
+```{r}
+# check the number of observations in each group
+aggregate(len ~ supp + dose, data = ToothGrowth, FUN = length)
+```
+
+```{r}
+# check the number of observations in each group
+table(ToothGrowth$supp, ToothGrowth$dose)
+```
+
+#### 3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+
+```{r}
+# check for group differences due to different supplement type
+# assuming unequal variances between the two groups
+t.test(len ~ supp, data = ToothGrowth)
+```
+
+```{r}
+# Create three sub-groups per dose level pairs in order to check for group differences.
+# assuming unequal variances between the two groups
+ToothGrowth.doses_0.5_1.0 <- subset(ToothGrowth, dose %in% c(0.5, 1.0))
+ToothGrowth.doses_0.5_2.0 <- subset(ToothGrowth, dose %in% c(0.5, 2.0))
+ToothGrowth.doses_1.0_2.0 <- subset(ToothGrowth, dose %in% c(1.0, 2.0))
+
+# Check for group differences due to different dose levels of (0.5, 1.0). Assume unequal variances between the two groups.
+t.test(len ~ dose, data = ToothGrowth.doses_0.5_1.0)
+```
+
+```{r}
+# Check for group differences due to different dose levels of (0.5, 2.0). Assume unequal variances between the two groups.
+t.test(len ~ dose, data = ToothGrowth.doses_0.5_2.0)
+```
+
+```{r}
+# Check for group differences due to different dose levels of (1.0, 2.0). Assume unequal variances between the two groups.
+t.test(len ~ dose, data = ToothGrowth.doses_1.0_2.0)
+```
+
+#### 4. State your conclusions and the assumptions needed for your conclusions.
+
+#### **Conclusion:**
+
+-   ***The p-value is 0.06, and the confidence interval contains zero. This indicates that we can not reject the null hypothesis that the different supplement types have no effect on tooth length.***
+-   ***For all three of the above t-tests, the resulting p-value is less than 0.5 and the confidence intervals do not contain zero. Thus, we reject the null hypothesis, and establish that increasing the dose level leads to an increase in tooth length.***
+
+#### **Assumptions**:
+
+1.  **Random Assignment:** The experiment involved the random assignment of guinea pigs to different dose level categories and supplement types. This randomization aimed to control for potential confounders that might influence the outcome.
+
+2.  **Representativeness of Sample:** It is assumed that the members of the sample population, comprising the 60 guinea pigs, are representative of the entire population of guinea pigs. This assumption allows for the generalization of the experiment's results to the broader population.
+
+3.  **Variances in t-tests:** For the t-tests conducted, it is assumed that the variances are different between the two groups being compared. This assumption is considered less stringent than assuming equal variances and is made to accommodate potential differences in variability between the groups.
+

@@ -11,7 +11,7 @@
 
 
 
-<title>Part1.knit</title>
+<title>Statistical_Inference_Analysis.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -429,6 +429,187 @@ ggplot(data.frame(means), aes(x = means)) +
 </div>
 <div id="part-2-basic-inferential-data-analysis" class="section level3">
 <h3>Part 2 Basic Inferential Data Analysis</h3>
+<p>Now in the second portion of the project, we’re going to analyze the
+ToothGrowth data in the R datasets package.</p>
+<div id="load-the-toothgrowth-data-and-perform-some-basic-exploratory-data-analyses" class="section level4">
+<h4>1. Load the ToothGrowth data and perform some basic exploratory data
+analyses</h4>
+<pre class="r"><code># load the ToothGrowth data
+data(ToothGrowth)
+
+# Change does column to factor data type
+ToothGrowth$dose &lt;- as.factor(ToothGrowth$dose)
+
+# check the structure of the data
+str(ToothGrowth)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    60 obs. of  3 variables:
+##  $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...
+##  $ supp: Factor w/ 2 levels &quot;OJ&quot;,&quot;VC&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ dose: Factor w/ 3 levels &quot;0.5&quot;,&quot;1&quot;,&quot;2&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<pre class="r"><code># check the first 6 rows of the data
+head(ToothGrowth)</code></pre>
+<pre><code>##    len supp dose
+## 1  4.2   VC  0.5
+## 2 11.5   VC  0.5
+## 3  7.3   VC  0.5
+## 4  5.8   VC  0.5
+## 5  6.4   VC  0.5
+## 6 10.0   VC  0.5</code></pre>
+<pre class="r"><code># check the last 6 rows of the data
+tail(ToothGrowth)</code></pre>
+<pre><code>##     len supp dose
+## 55 24.8   OJ    2
+## 56 30.9   OJ    2
+## 57 26.4   OJ    2
+## 58 27.3   OJ    2
+## 59 29.4   OJ    2
+## 60 23.0   OJ    2</code></pre>
+<pre class="r"><code># check the dimensions of the data
+dim(ToothGrowth)</code></pre>
+<pre><code>## [1] 60  3</code></pre>
+<pre class="r"><code># check the names of the data
+names(ToothGrowth)</code></pre>
+<pre><code>## [1] &quot;len&quot;  &quot;supp&quot; &quot;dose&quot;</code></pre>
+<pre class="r"><code># check the class of the data
+class(ToothGrowth)</code></pre>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+</div>
+<div id="provide-a-basic-summary-of-the-data." class="section level4">
+<h4>2. Provide a basic summary of the data.</h4>
+<pre class="r"><code># check the summary of the data
+summary(ToothGrowth)</code></pre>
+<pre><code>##       len        supp     dose   
+##  Min.   : 4.20   OJ:30   0.5:20  
+##  1st Qu.:13.07   VC:30   1  :20  
+##  Median :19.25           2  :20  
+##  Mean   :18.81                   
+##  3rd Qu.:25.27                   
+##  Max.   :33.90</code></pre>
+<pre class="r"><code># check the number of observations in each group
+aggregate(len ~ supp + dose, data = ToothGrowth, FUN = length)</code></pre>
+<pre><code>##   supp dose len
+## 1   OJ  0.5  10
+## 2   VC  0.5  10
+## 3   OJ    1  10
+## 4   VC    1  10
+## 5   OJ    2  10
+## 6   VC    2  10</code></pre>
+<pre class="r"><code># check the number of observations in each group
+aggregate(len ~ supp + dose, data = ToothGrowth, FUN = length)</code></pre>
+<pre><code>##   supp dose len
+## 1   OJ  0.5  10
+## 2   VC  0.5  10
+## 3   OJ    1  10
+## 4   VC    1  10
+## 5   OJ    2  10
+## 6   VC    2  10</code></pre>
+<pre class="r"><code># check the number of observations in each group
+table(ToothGrowth$supp, ToothGrowth$dose)</code></pre>
+<pre><code>##     
+##      0.5  1  2
+##   OJ  10 10 10
+##   VC  10 10 10</code></pre>
+</div>
+<div id="use-confidence-intervals-andor-hypothesis-tests-to-compare-tooth-growth-by-supp-and-dose.-only-use-the-techniques-from-class-even-if-theres-other-approaches-worth-considering" class="section level4">
+<h4>3. Use confidence intervals and/or hypothesis tests to compare tooth
+growth by supp and dose. (Only use the techniques from class, even if
+there’s other approaches worth considering)</h4>
+<pre class="r"><code># check for group differences due to different supplement type
+# assuming unequal variances between the two groups
+t.test(len ~ supp, data = ToothGrowth)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  len by supp
+## t = 1.9153, df = 55.309, p-value = 0.06063
+## alternative hypothesis: true difference in means between group OJ and group VC is not equal to 0
+## 95 percent confidence interval:
+##  -0.1710156  7.5710156
+## sample estimates:
+## mean in group OJ mean in group VC 
+##         20.66333         16.96333</code></pre>
+<pre class="r"><code># Create three sub-groups per dose level pairs in order to check for group differences.
+# assuming unequal variances between the two groups
+ToothGrowth.doses_0.5_1.0 &lt;- subset(ToothGrowth, dose %in% c(0.5, 1.0))
+ToothGrowth.doses_0.5_2.0 &lt;- subset(ToothGrowth, dose %in% c(0.5, 2.0))
+ToothGrowth.doses_1.0_2.0 &lt;- subset(ToothGrowth, dose %in% c(1.0, 2.0))
+
+# Check for group differences due to different dose levels of (0.5, 1.0). Assume unequal variances between the two groups.
+t.test(len ~ dose, data = ToothGrowth.doses_0.5_1.0)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  len by dose
+## t = -6.4766, df = 37.986, p-value = 1.268e-07
+## alternative hypothesis: true difference in means between group 0.5 and group 1 is not equal to 0
+## 95 percent confidence interval:
+##  -11.983781  -6.276219
+## sample estimates:
+## mean in group 0.5   mean in group 1 
+##            10.605            19.735</code></pre>
+<pre class="r"><code># Check for group differences due to different dose levels of (0.5, 2.0). Assume unequal variances between the two groups.
+t.test(len ~ dose, data = ToothGrowth.doses_0.5_2.0)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  len by dose
+## t = -11.799, df = 36.883, p-value = 4.398e-14
+## alternative hypothesis: true difference in means between group 0.5 and group 2 is not equal to 0
+## 95 percent confidence interval:
+##  -18.15617 -12.83383
+## sample estimates:
+## mean in group 0.5   mean in group 2 
+##            10.605            26.100</code></pre>
+<pre class="r"><code># Check for group differences due to different dose levels of (1.0, 2.0). Assume unequal variances between the two groups.
+t.test(len ~ dose, data = ToothGrowth.doses_1.0_2.0)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  len by dose
+## t = -4.9005, df = 37.101, p-value = 1.906e-05
+## alternative hypothesis: true difference in means between group 1 and group 2 is not equal to 0
+## 95 percent confidence interval:
+##  -8.996481 -3.733519
+## sample estimates:
+## mean in group 1 mean in group 2 
+##          19.735          26.100</code></pre>
+</div>
+<div id="state-your-conclusions-and-the-assumptions-needed-for-your-conclusions." class="section level4">
+<h4>4. State your conclusions and the assumptions needed for your
+conclusions.</h4>
+</div>
+<div id="conclusion" class="section level4">
+<h4><strong>Conclusion:</strong></h4>
+<ul>
+<li><strong><em>The p-value is 0.06, and the confidence interval
+contains zero. This indicates that we can not reject the null hypothesis
+that the different supplement types have no effect on tooth
+length.</em></strong></li>
+<li><strong><em>For all three of the above t-tests, the resulting
+p-value is less than 0.5 and the confidence intervals do not contain
+zero. Thus, we reject the null hypothesis, and establish that increasing
+the dose level leads to an increase in tooth length.</em></strong></li>
+</ul>
+</div>
+<div id="assumptions" class="section level4">
+<h4><strong>Assumptions</strong>:</h4>
+<ol style="list-style-type: decimal">
+<li><p><strong>Random Assignment:</strong> The experiment involved the
+random assignment of guinea pigs to different dose level categories and
+supplement types. This randomization aimed to control for potential
+confounders that might influence the outcome.</p></li>
+<li><p><strong>Representativeness of Sample:</strong> It is assumed that
+the members of the sample population, comprising the 60 guinea pigs, are
+representative of the entire population of guinea pigs. This assumption
+allows for the generalization of the experiment’s results to the broader
+population.</p></li>
+<li><p><strong>Variances in t-tests:</strong> For the t-tests conducted,
+it is assumed that the variances are different between the two groups
+being compared. This assumption is considered less stringent than
+assuming equal variances and is made to accommodate potential
+differences in variability between the groups.</p></li>
+</ol>
+</div>
 </div>
 </div>
 
